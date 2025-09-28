@@ -213,6 +213,47 @@
         padding-bottom: calc(24px + env(safe-area-inset-bottom));
       }
     }
+
+    .speedup-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, #ff6b6b, #ffb84d);
+      color: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      text-align: center;
+      font-weight: 900;
+      font-size: 32px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      z-index: 20000;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .speedup-notification.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .speedup-text {
+      font-size: 42px;
+      margin-bottom: 15px;
+      letter-spacing: 3px;
+    }
+
+    .time-change {
+      font-size: 24px;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .time-change span {
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      margin: 0 8px;
+    }
   </style>
 </head>
 
@@ -224,6 +265,12 @@
   <div class="app">
     <div class="hud">
       <div id="counter" aria-live="polite">0 / 300</div>
+    </div>
+    <div id="speedupNotification" class="speedup-notification" style="display: none;">
+      <div class="speedup-text">SPEED UP!</div>
+      <div class="time-change">
+        <span id="oldTime">900ms</span> → <span id="newTime">800ms</span>
+      </div>
     </div>
     <div id="grid" class="grid" role="grid" aria-label="Tap grid"></div>
   </div>

@@ -176,6 +176,14 @@ function updateIdleTimerDisplay() {
 function triggerSpeedupAnimation() {
   const body = document.body;
   if (!body) return;
+  
+  // Play sound effect
+  playSpeedupSound();
+  
+  // Show dramatic notification
+  showSpeedupNotification();
+  
+  // Original timer bar and tile animations
   body.classList.remove('speedup');
   if (speedupAnimationTimeout) {
     clearTimeout(speedupAnimationTimeout);
@@ -188,6 +196,62 @@ function triggerSpeedupAnimation() {
     body.classList.remove('speedup');
     speedupAnimationTimeout = null;
   }, 400);
+}
+
+function playSpeedupSound() {
+  try {
+    // Create a synthetic "power-up" sound using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Create a rising tone effect
+    oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.3);
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.3);
+  } catch (e) {
+    // Fallback for browsers without Web Audio API support
+    console.log('Speed up! 🚀');
+  }
+}
+
+function showSpeedupNotification() {
+  const notification = document.getElementById('speedupNotification');
+  const oldTimeEl = document.getElementById('oldTime');
+  const newTimeEl = document.getElementById('newTime');
+  
+  if (!notification || !oldTimeEl || !newTimeEl) return;
+  
+  // Calculate old and new timeouts
+  const currentSegment = getSegmentIndex();
+  const oldTimeout = getTimeoutForSegment(Math.max(0, currentSegment - 1));
+  const newTimeout = getTimeoutForSegment(currentSegment);
+  
+  // Update the time display
+  oldTimeEl.textContent = `${oldTimeout}ms`;
+  newTimeEl.textContent = `${newTimeout}ms`;
+  
+  // Show the notification
+  notification.style.display = 'block';
+  setTimeout(() => {
+    notification.classList.add('show');
+  }, 50);
+  
+  // Hide after 2 seconds
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => {
+      notification.style.display = 'none';
+    }, 300);
+  }, 2000);
 }
 
 function refreshSpeedSegment() {
