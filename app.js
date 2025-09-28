@@ -107,7 +107,14 @@ function onTileClick(index) {
   const isCorrectTap = index === previousHighlight;
 
   if (isCorrectTap) {
+    const previousSegment = getSegmentIndex(state.tapsCount, state.currentTarget);
     state.tapsCount += 1;
+    const newSegment = getSegmentIndex(state.tapsCount, state.currentTarget);
+    
+    // Trigger speed-up animation when reaching a new one-fifth milestone
+    if (newSegment > previousSegment) {
+      triggerSpeedupAnimation();
+    }
   }
 
   const reachedTarget = isCorrectTap && state.tapsCount >= state.currentTarget;
@@ -136,7 +143,7 @@ function updateCounter() {
 
 function setProgressBar(percent) {
   const bar = document.getElementById('tapTimerBar');
-  if (bar) bar.style.width = percent + '%';
+  if (bar) bar.style.transform = `scaleX(${percent / 100})`;
 }
 
 
@@ -364,7 +371,7 @@ function init() {
     const vh = window.innerHeight - barH;
     
     const gapSize = 6; // CSS var --gap
-    const targetTileSize = 75; // Fixed tile size similar to original (adjust this value to match your preferred size)
+    const targetTileSize = 100; // Fixed tile size similar to original (adjust this value to match your preferred size)
     
     // Calculate how many tiles can fit in each dimension
     const maxColumns = Math.floor((vw + gapSize) / (targetTileSize + gapSize));

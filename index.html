@@ -54,13 +54,12 @@
 
     #tapTimerBar {
       height: 6px;
-      width: 0%;
+      width: 100%;
       background: linear-gradient(90deg, #ffb84d, #ff6b6b);
-      transition: width 0.06s linear;
-      border-radius: 4px;
-      max-width: 720px;
-      width: 90%;
-      transform-origin: center
+      transition: transform 0.06s linear;
+      border-radius: 0;
+      transform-origin: left;
+      transform: scaleX(1)
     }
 
     #timeMsLeft {
